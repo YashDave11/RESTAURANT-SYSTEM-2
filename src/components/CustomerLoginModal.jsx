@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useAuth } from "../context/MultiAuthContext";
+import axios from "axios";
 
 const CustomerLoginModal = ({ onClose, onSuccess }) => {
   const { login, getCustomerSession } = useAuth();
