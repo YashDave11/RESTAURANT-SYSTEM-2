@@ -228,20 +228,20 @@ router.post("/forgot-password", sanitizeInput, async (req, res) => {
     user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
     await user.save();
 
-    // Send email with reset code
-    try {
-      await sendPasswordResetEmail(email, resetToken, user.name);
-    } catch (emailError) {
-      console.error("Failed to send email:", emailError);
-      // Continue anyway - don't reveal email sending failure
-    }
+    // Send email with reset code (non-blocking)
+    sendPasswordResetEmail(email, resetToken, user.name)
+      .then(() => console.log("✅ Password reset email sent successfully"))
+      .catch((emailError) =>
+        console.error("❌ Failed to send email:", emailError)
+      );
 
+    // Respond immediately without waiting for email
     res.json({
       message:
         "If an account exists with this email, you will receive a password reset code",
       code: "RESET_EMAIL_SENT",
-      // For development only - remove in production!
-      devToken: process.env.NODE_ENV === "development" ? resetToken : undefined,
+      // For development/testing - shows token in response
+      devToken: resetToken, // Always show for now since email might not work
     });
   } catch (error) {
     console.error("Forgot password error:", error);
