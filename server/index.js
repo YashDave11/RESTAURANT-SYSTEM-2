@@ -24,6 +24,9 @@ dotenv.config();
 
 const app = express();
 
+// Trust proxy - required for Render.com and other reverse proxies
+app.set("trust proxy", 1);
+
 // Security middleware
 app.use(
   helmet({
