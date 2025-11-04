@@ -26,20 +26,23 @@ const RestaurantForgotPasswordPage = () => {
         }
       );
 
+      // Store reset token and email for next page
+      if (data.devToken) {
+        console.log("🔑 Reset Code:", data.devToken);
+        sessionStorage.setItem("resetToken", data.devToken);
+      }
+      sessionStorage.setItem("resetEmail", email);
+
       setMessage(
-        "If an account exists with this email, you will receive a password reset code shortly."
+        `Reset code sent! ${
+          data.devToken ? `Your code is: ${data.devToken}` : "Check your email."
+        }`
       );
 
-      // Show dev token in development
-      if (data.devToken) {
-        console.log("🔑 Development Reset Code:", data.devToken);
-        alert(`Development Mode - Reset Code: ${data.devToken}`);
-      }
-
-      // Redirect to reset password page after 2 seconds
+      // Redirect to reset password page after 3 seconds
       setTimeout(() => {
         navigate("/restaurant/reset-password");
-      }, 2000);
+      }, 3000);
     } catch (err) {
       setError(
         err.response?.data?.message ||

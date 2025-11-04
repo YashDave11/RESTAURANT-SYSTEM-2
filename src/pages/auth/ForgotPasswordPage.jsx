@@ -27,12 +27,10 @@ const ForgotPasswordPage = () => {
       // Store email for reset password page
       sessionStorage.setItem("resetEmail", email);
 
-      // Show dev token in console (development only)
+      // Store the reset token for display
       if (response.data.devToken) {
-        console.log("🔑 Reset Token (DEV):", response.data.devToken);
-        alert(
-          `Reset Token (DEV ONLY): ${response.data.devToken}\n\nCheck console for details.`
-        );
+        console.log("🔑 Reset Token:", response.data.devToken);
+        sessionStorage.setItem("resetToken", response.data.devToken);
       }
 
       setSuccess(true);
@@ -54,6 +52,8 @@ const ForgotPasswordPage = () => {
   };
 
   if (success) {
+    const resetToken = sessionStorage.getItem("resetToken");
+
     return (
       <div className="min-h-screen bg-background-light flex items-center justify-center p-4">
         <div className="w-full max-w-md bg-white p-8 sm:p-10 rounded-xl shadow-lg text-center">
@@ -65,13 +65,22 @@ const ForgotPasswordPage = () => {
             </div>
           </div>
 
-          <h2 className="text-2xl font-black mb-4">Check Your Email</h2>
-          <p className="text-gray-600 mb-6">
+          <h2 className="text-2xl font-black mb-4">Reset Code Sent!</h2>
+          <p className="text-gray-600 mb-4">
             We've sent a password reset code to <strong>{email}</strong>
           </p>
-          <p className="text-sm text-gray-500 mb-6">
-            Check your console for the reset code (development mode).
-          </p>
+
+          {resetToken && (
+            <div className="bg-orange-50 border-2 border-orange-200 rounded-lg p-4 mb-6">
+              <p className="text-sm text-gray-600 mb-2">Your Reset Code:</p>
+              <p className="text-3xl font-bold text-orange-600 tracking-wider">
+                {resetToken}
+              </p>
+              <p className="text-xs text-gray-500 mt-2">
+                This code will expire in 1 hour
+              </p>
+            </div>
+          )}
 
           <div className="flex flex-col gap-3">
             <Link
