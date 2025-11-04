@@ -16,9 +16,15 @@ const RestaurantForgotPasswordPage = () => {
     setMessage("");
 
     try {
-      const { data } = await axios.post("/api/restaurant/forgot-password", {
-        email,
-      });
+      const { data } = await axios.post(
+        "/api/restaurant/forgot-password",
+        {
+          email,
+        },
+        {
+          timeout: 30000, // 30 second timeout
+        }
+      );
 
       setMessage(
         "If an account exists with this email, you will receive a password reset code shortly."

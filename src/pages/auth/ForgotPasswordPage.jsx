@@ -14,7 +14,15 @@ const ForgotPasswordPage = () => {
     setLoading(true);
 
     try {
-      const response = await axios.post("/api/auth/forgot-password", { email });
+      const response = await axios.post(
+        "/api/auth/forgot-password",
+        {
+          email,
+        },
+        {
+          timeout: 30000, // 30 second timeout
+        }
+      );
 
       // Store email for reset password page
       sessionStorage.setItem("resetEmail", email);
@@ -29,10 +37,17 @@ const ForgotPasswordPage = () => {
 
       setSuccess(true);
     } catch (err) {
-      setError(
-        err.response?.data?.message ||
-          "Failed to send reset email. Please try again."
-      );
+      console.error("Forgot password error:", err);
+      if (err.code === "ECONNABORTED") {
+        setError(
+          "Request timed out. Please check your internet connection and try again."
+        );
+      } else {
+        setError(
+          err.response?.data?.message ||
+            "Failed to send reset email. Please try again."
+        );
+      }
     } finally {
       setLoading(false);
     }
