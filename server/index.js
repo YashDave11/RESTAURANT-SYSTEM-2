@@ -92,6 +92,22 @@ app.use("/api/seed", seedRoutes);
 app.use("/api/feedback", feedbackRoutes);
 app.use("/api/migration", migrationRoutes);
 
+// Root endpoint
+app.get("/", (req, res) => {
+  res.json({
+    name: "Restaurant QR Menu API",
+    version: "1.0.0",
+    status: "running",
+    endpoints: {
+      health: "/health",
+      auth: "/api/auth/*",
+      menu: "/api/menu/*",
+      orders: "/api/orders/*",
+      restaurant: "/api/restaurant/*",
+    },
+  });
+});
+
 // Health check endpoint
 app.get("/health", (req, res) => {
   res.json({
