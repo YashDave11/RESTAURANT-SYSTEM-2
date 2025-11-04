@@ -31,3 +31,7 @@ npm-debug.log*
 # Temporary files
 *.tmp
 .cache/
+
+# Uploads
+server/uploads/
+uploads/
