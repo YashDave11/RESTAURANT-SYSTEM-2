@@ -134,20 +134,24 @@ const RestaurantOrdersPage = () => {
     try {
       setTotalOrdersLoading(true);
       console.log("Fetching total orders with feedback...");
-      
+
       // Check if we have the right token
       const token = getToken("restaurant");
       console.log("Restaurant token available:", !!token);
-      
+
       // First test the debug endpoint
       try {
         const debugResponse = await axios.get("/api/orders/debug");
         console.log("Debug endpoint response:", debugResponse.data);
       } catch (debugError) {
         console.error("Debug endpoint failed:", debugError.response?.data);
-        throw new Error(`Authentication failed: ${debugError.response?.data?.message || debugError.message}`);
+        throw new Error(
+          `Authentication failed: ${
+            debugError.response?.data?.message || debugError.message
+          }`
+        );
       }
-      
+
       // Now fetch the actual data
       const { data } = await axios.get("/api/orders/all-with-feedback");
       console.log("Total orders response:", data);
@@ -156,7 +160,11 @@ const RestaurantOrdersPage = () => {
       console.error("Error fetching total orders:", error);
       console.error("Error details:", error.response?.data);
       console.error("Error status:", error.response?.status);
-      alert(`Failed to fetch order history: ${error.response?.data?.message || error.message}`);
+      alert(
+        `Failed to fetch order history: ${
+          error.response?.data?.message || error.message
+        }`
+      );
     } finally {
       setTotalOrdersLoading(false);
     }
@@ -168,14 +176,15 @@ const RestaurantOrdersPage = () => {
   };
 
   const renderStars = (rating) => {
-    if (!rating) return <span className="text-gray-400 text-sm">No rating</span>;
+    if (!rating)
+      return <span className="text-gray-400 text-sm">No rating</span>;
     return (
       <div className="flex gap-1">
         {[1, 2, 3, 4, 5].map((star) => (
           <svg
             key={star}
             className={`w-4 h-4 ${
-              star <= rating ? 'text-yellow-400 fill-current' : 'text-gray-300'
+              star <= rating ? "text-yellow-400 fill-current" : "text-gray-300"
             }`}
             viewBox="0 0 24 24"
           >
@@ -249,7 +258,10 @@ const RestaurantOrdersPage = () => {
             {order.pointsRedeemed > 0 ? (
               <div className="text-right">
                 <p className="text-sm text-gray-600">
-                  ₹{order.originalAmount?.toFixed(2) || order.totalAmount.toFixed(2)} - ({order.pointsRedeemed} points)
+                  ₹
+                  {order.originalAmount?.toFixed(2) ||
+                    order.totalAmount.toFixed(2)}{" "}
+                  - ({order.pointsRedeemed} points)
                 </p>
                 <p className="font-bold text-lg text-green-600">
                   ₹{order.totalAmount.toFixed(2)}
@@ -504,14 +516,26 @@ const RestaurantOrdersPage = () => {
               <div className="sticky top-0 bg-white border-b px-6 py-4 flex justify-between items-center rounded-t-xl">
                 <div>
                   <h2 className="text-2xl font-bold">All Orders & Feedback</h2>
-                  <p className="text-sm text-gray-600">Complete order history with customer feedback</p>
+                  <p className="text-sm text-gray-600">
+                    Complete order history with customer feedback
+                  </p>
                 </div>
                 <button
                   onClick={() => setShowTotalOrdersModal(false)}
                   className="text-gray-500 hover:text-gray-700"
                 >
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  <svg
+                    className="w-6 h-6"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M6 18L18 6M6 6l12 12"
+                    />
                   </svg>
                 </button>
               </div>
@@ -528,49 +552,86 @@ const RestaurantOrdersPage = () => {
                     {/* Summary Stats */}
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
                       <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                        <h3 className="text-2xl font-bold text-blue-600">{totalOrdersData.summary.totalOrders}</h3>
+                        <h3 className="text-2xl font-bold text-blue-600">
+                          {totalOrdersData.summary.totalOrders}
+                        </h3>
                         <p className="text-sm text-blue-700">Total Orders</p>
                       </div>
                       <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-                        <h3 className="text-2xl font-bold text-green-600">{totalOrdersData.summary.ordersWithFeedback}</h3>
-                        <p className="text-sm text-green-700">Orders with Feedback</p>
+                        <h3 className="text-2xl font-bold text-green-600">
+                          {totalOrdersData.summary.ordersWithFeedback}
+                        </h3>
+                        <p className="text-sm text-green-700">
+                          Orders with Feedback
+                        </p>
                       </div>
                       <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-                        <h3 className="text-2xl font-bold text-yellow-600">{totalOrdersData.summary.totalFeedbackPoints}</h3>
-                        <p className="text-sm text-yellow-700">Total Points Given</p>
+                        <h3 className="text-2xl font-bold text-yellow-600">
+                          {totalOrdersData.summary.totalFeedbackPoints}
+                        </h3>
+                        <p className="text-sm text-yellow-700">
+                          Total Points Given
+                        </p>
                       </div>
                       <div className="bg-purple-50 border border-purple-200 rounded-lg p-4">
-                        <h3 className="text-2xl font-bold text-purple-600">{totalOrdersData.summary.averageRating}★</h3>
-                        <p className="text-sm text-purple-700">Average Rating</p>
+                        <h3 className="text-2xl font-bold text-purple-600">
+                          {totalOrdersData.summary.averageRating}★
+                        </h3>
+                        <p className="text-sm text-purple-700">
+                          Average Rating
+                        </p>
                       </div>
                     </div>
 
                     {/* Orders List */}
                     <div className="space-y-4">
-                      <h3 className="text-lg font-semibold">Order History ({totalOrdersData.orders.length})</h3>
+                      <h3 className="text-lg font-semibold">
+                        Order History ({totalOrdersData.orders.length})
+                      </h3>
                       {totalOrdersData.orders.map((order, orderIndex) => (
-                        <div key={orderIndex} className="border border-gray-200 rounded-lg overflow-hidden">
+                        <div
+                          key={orderIndex}
+                          className="border border-gray-200 rounded-lg overflow-hidden"
+                        >
                           {/* Order Header */}
                           <div className="bg-gray-50 px-4 py-3 border-b">
                             <div className="flex justify-between items-center">
                               <div className="flex items-center gap-4">
                                 <div>
                                   <p className="font-semibold">
-                                    Order #{order.orderId.toString().slice(-6).toUpperCase()}
+                                    Order #
+                                    {order.orderId
+                                      .toString()
+                                      .slice(-6)
+                                      .toUpperCase()}
                                   </p>
                                   <p className="text-sm text-gray-600">
-                                    {new Date(order.orderDate).toLocaleDateString()} • {new Date(order.orderDate).toLocaleTimeString()}
+                                    {new Date(
+                                      order.orderDate
+                                    ).toLocaleDateString()}{" "}
+                                    •{" "}
+                                    {new Date(
+                                      order.orderDate
+                                    ).toLocaleTimeString()}
                                   </p>
                                 </div>
                                 <div className="flex items-center gap-2">
-                                  <span className="text-sm text-gray-600">Table {order.tableNumber}</span>
-                                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                                    order.status === 'delivered' ? 'bg-green-100 text-green-700' :
-                                    order.status === 'ready' ? 'bg-blue-100 text-blue-700' :
-                                    order.status === 'preparing' ? 'bg-yellow-100 text-yellow-700' :
-                                    'bg-gray-100 text-gray-700'
-                                  }`}>
-                                    {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
+                                  <span className="text-sm text-gray-600">
+                                    Table {order.tableNumber}
+                                  </span>
+                                  <span
+                                    className={`px-2 py-1 rounded-full text-xs font-medium ${
+                                      order.status === "delivered"
+                                        ? "bg-green-100 text-green-700"
+                                        : order.status === "ready"
+                                        ? "bg-blue-100 text-blue-700"
+                                        : order.status === "preparing"
+                                        ? "bg-yellow-100 text-yellow-700"
+                                        : "bg-gray-100 text-gray-700"
+                                    }`}
+                                  >
+                                    {order.status.charAt(0).toUpperCase() +
+                                      order.status.slice(1)}
                                   </span>
                                 </div>
                               </div>
@@ -578,27 +639,40 @@ const RestaurantOrdersPage = () => {
                                 {order.pointsRedeemed > 0 ? (
                                   <div>
                                     <p className="text-xs text-gray-500">
-                                      ₹{order.originalAmount?.toFixed(2) || order.totalAmount.toFixed(2)} - ({order.pointsRedeemed} pts)
+                                      ₹
+                                      {order.originalAmount?.toFixed(2) ||
+                                        order.totalAmount.toFixed(2)}{" "}
+                                      - ({order.pointsRedeemed} pts)
                                     </p>
-                                    <p className="font-semibold">₹{order.totalAmount.toFixed(2)}</p>
+                                    <p className="font-semibold">
+                                      ₹{order.totalAmount.toFixed(2)}
+                                    </p>
                                   </div>
                                 ) : (
-                                  <p className="font-semibold">₹{order.totalAmount.toFixed(2)}</p>
+                                  <p className="font-semibold">
+                                    ₹{order.totalAmount.toFixed(2)}
+                                  </p>
                                 )}
                                 {order.feedbackSubmitted ? (
                                   <div className="flex items-center gap-2 mt-1">
-                                    <span className="text-sm text-green-600 font-medium">+{order.totalFeedbackPoints} pts</span>
+                                    <span className="text-sm text-green-600 font-medium">
+                                      +{order.totalFeedbackPoints} pts
+                                    </span>
                                     <span className="px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700">
                                       Feedback Given
                                     </span>
                                   </div>
                                 ) : (
-                                  <span className="text-sm text-gray-500 mt-1 block">No feedback</span>
+                                  <span className="text-sm text-gray-500 mt-1 block">
+                                    No feedback
+                                  </span>
                                 )}
                               </div>
                             </div>
                             {order.customerEmail && (
-                              <p className="text-sm text-gray-600 mt-1">Customer: {order.customerEmail}</p>
+                              <p className="text-sm text-gray-600 mt-1">
+                                Customer: {order.customerEmail}
+                              </p>
                             )}
                           </div>
 
@@ -606,53 +680,78 @@ const RestaurantOrdersPage = () => {
                           <div className="p-4">
                             <div className="space-y-3">
                               {order.items.map((item, itemIndex) => (
-                                <div key={itemIndex} className="flex gap-3 p-3 bg-gray-50 rounded-lg">
+                                <div
+                                  key={itemIndex}
+                                  className="flex gap-3 p-3 bg-gray-50 rounded-lg"
+                                >
                                   <img
                                     src={
                                       item.imageUrl
-                                        ? `http://localhost:5000${item.imageUrl}`
+                                        ? item.imageUrl.startsWith("http")
+                                          ? item.imageUrl
+                                          : `${
+                                              import.meta.env.VITE_API_URL || ""
+                                            }${item.imageUrl}`
                                         : "https://via.placeholder.com/60x60?text=No+Image"
                                     }
                                     alt={item.name}
                                     className="w-12 h-12 object-cover rounded-lg flex-shrink-0"
                                   />
                                   <div className="flex-1">
-                                    <h4 className="font-semibold">{item.name}</h4>
+                                    <h4 className="font-semibold">
+                                      {item.name}
+                                    </h4>
                                     <p className="text-sm text-gray-600">
-                                      Qty: {item.quantity} • ₹{(item.price * item.quantity).toFixed(2)}
+                                      Qty: {item.quantity} • ₹
+                                      {(item.price * item.quantity).toFixed(2)}
                                     </p>
-                                    
+
                                     {/* Rating & Feedback */}
                                     {item.rating ? (
                                       <div className="mt-2">
                                         <div className="flex items-center gap-2 mb-1">
                                           {renderStars(item.rating)}
-                                          <span className="text-sm text-gray-600">({item.rating}/5)</span>
-                                          <span className="text-sm font-medium text-green-600">+{item.points} pts</span>
+                                          <span className="text-sm text-gray-600">
+                                            ({item.rating}/5)
+                                          </span>
+                                          <span className="text-sm font-medium text-green-600">
+                                            +{item.points} pts
+                                          </span>
                                         </div>
                                         {item.description && (
                                           <div className="mt-2 p-2 bg-white border border-gray-200 rounded">
-                                            <p className="text-sm text-gray-700 italic">"{item.description}"</p>
+                                            <p className="text-sm text-gray-700 italic">
+                                              "{item.description}"
+                                            </p>
                                           </div>
                                         )}
                                         {item.feedbackDate && (
                                           <p className="text-xs text-gray-500 mt-1">
-                                            Reviewed on {new Date(item.feedbackDate).toLocaleDateString()}
+                                            Reviewed on{" "}
+                                            {new Date(
+                                              item.feedbackDate
+                                            ).toLocaleDateString()}
                                           </p>
                                         )}
                                       </div>
                                     ) : (
-                                      <p className="text-sm text-gray-500 mt-1">No rating given</p>
+                                      <p className="text-sm text-gray-500 mt-1">
+                                        No rating given
+                                      </p>
                                     )}
                                   </div>
                                 </div>
                               ))}
                             </div>
-                            
+
                             {order.specialInstructions && (
                               <div className="mt-3 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
-                                <p className="text-sm font-semibold text-yellow-800 mb-1">Special Instructions:</p>
-                                <p className="text-sm text-yellow-900">{order.specialInstructions}</p>
+                                <p className="text-sm font-semibold text-yellow-800 mb-1">
+                                  Special Instructions:
+                                </p>
+                                <p className="text-sm text-yellow-900">
+                                  {order.specialInstructions}
+                                </p>
                               </div>
                             )}
                           </div>
@@ -662,7 +761,9 @@ const RestaurantOrdersPage = () => {
                   </>
                 ) : (
                   <div className="text-center py-8">
-                    <p className="text-gray-600">Failed to load order history</p>
+                    <p className="text-gray-600">
+                      Failed to load order history
+                    </p>
                   </div>
                 )}
               </div>

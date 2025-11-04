@@ -260,7 +260,11 @@ const RestaurantDashboard = () => {
       allowSpecialInstructions: item.allowSpecialInstructions !== false,
     });
     if (item.imageUrl) {
-      setImagePreview(`http://localhost:5000${item.imageUrl}`);
+      setImagePreview(
+        item.imageUrl.startsWith("http")
+          ? item.imageUrl
+          : `${import.meta.env.VITE_API_URL || ""}${item.imageUrl}`
+      );
     }
     setShowEditItemModal(true);
   };
@@ -596,7 +600,11 @@ const RestaurantDashboard = () => {
                 <img
                   src={
                     item.imageUrl
-                      ? `http://localhost:5000${item.imageUrl}`
+                      ? item.imageUrl.startsWith("http")
+                        ? item.imageUrl
+                        : `${import.meta.env.VITE_API_URL || ""}${
+                            item.imageUrl
+                          }`
                       : "https://via.placeholder.com/400x300?text=No+Image"
                   }
                   alt={item.name}
