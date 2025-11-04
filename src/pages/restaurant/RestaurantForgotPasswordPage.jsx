@@ -26,11 +26,7 @@ const RestaurantForgotPasswordPage = () => {
         }
       );
 
-      // Store reset token and email for next page
-      if (data.devToken) {
-        console.log("🔑 Reset Code:", data.devToken);
-        sessionStorage.setItem("resetToken", data.devToken);
-      }
+      // Store email for reset password page
       sessionStorage.setItem("resetEmail", email);
 
       setMessage(

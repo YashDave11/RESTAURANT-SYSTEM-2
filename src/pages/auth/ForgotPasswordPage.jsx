@@ -27,11 +27,8 @@ const ForgotPasswordPage = () => {
       // Store email for reset password page
       sessionStorage.setItem("resetEmail", email);
 
-      // Store the reset token for display
-      if (response.data.devToken) {
-        console.log("🔑 Reset Token:", response.data.devToken);
-        sessionStorage.setItem("resetToken", response.data.devToken);
-      }
+      // Store email for reset password page
+      sessionStorage.setItem("resetEmail", email);
 
       setSuccess(true);
     } catch (err) {

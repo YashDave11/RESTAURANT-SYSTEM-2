@@ -355,8 +355,6 @@ router.post("/forgot-password", sanitizeInput, async (req, res) => {
       message:
         "If an account exists with this email, you will receive a password reset code",
       code: "RESET_EMAIL_SENT",
-      // For development/testing - shows token in response
-      devToken: resetToken, // Always show for now since email might not work
     });
   } catch (error) {
     console.error("Restaurant forgot password error:", error);
