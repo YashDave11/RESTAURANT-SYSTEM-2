@@ -1,33 +1,11 @@
 import express from "express";
 import multer from "multer";
-import path from "path";
-import { fileURLToPath } from "url";
-import fs from "fs";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+import cloudinary from "../config/cloudinary.js";
 
 const router = express.Router();
 
-// Create uploads directory if it doesn't exist
-const uploadsDir = path.join(__dirname, "../uploads");
-if (!fs.existsSync(uploadsDir)) {
-  fs.mkdirSync(uploadsDir, { recursive: true });
-}
-
-// Configure multer for file upload
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, uploadsDir);
-  },
-  filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    cb(
-      null,
-      file.fieldname + "-" + uniqueSuffix + path.extname(file.originalname)
-    );
-  },
-});
+// Configure multer for memory storage (Cloudinary upload)
+const storage = multer.memoryStorage();
 
 const fileFilter = (req, file, cb) => {
   // Accept images and PDFs only
@@ -57,38 +35,66 @@ const upload = multer({
   fileFilter: fileFilter,
 });
 
+// Helper function to upload to Cloudinary
+const uploadToCloudinary = (fileBuffer, folder = "restaurant-uploads") => {
+  return new Promise((resolve, reject) => {
+    const uploadStream = cloudinary.uploader.upload_stream(
+      {
+        folder: folder,
+        resource_type: "auto",
+      },
+      (error, result) => {
+        if (error) reject(error);
+        else resolve(result);
+      }
+    );
+    uploadStream.end(fileBuffer);
+  });
+};
+
 // Upload single file
-router.post("/single", upload.single("document"), (req, res) => {
+router.post("/single", upload.single("document"), async (req, res) => {
   try {
     if (!req.file) {
       return res.status(400).json({ message: "No file uploaded" });
     }
 
-    const fileUrl = `/uploads/${req.file.filename}`;
+    const result = await uploadToCloudinary(
+      req.file.buffer,
+      "restaurant-documents"
+    );
+
     res.json({
       message: "File uploaded successfully",
-      fileUrl: fileUrl,
-      filename: req.file.filename,
+      fileUrl: result.secure_url,
+      publicId: result.public_id,
       originalName: req.file.originalname,
       size: req.file.size,
     });
   } catch (error) {
+    console.error("Upload error:", error);
     res.status(500).json({ message: error.message });
   }
 });
 
 // Upload multiple files
-router.post("/multiple", upload.array("documents", 5), (req, res) => {
+router.post("/multiple", upload.array("documents", 5), async (req, res) => {
   try {
     if (!req.files || req.files.length === 0) {
       return res.status(400).json({ message: "No files uploaded" });
     }
 
-    const fileUrls = req.files.map((file) => ({
-      fileUrl: `/uploads/${file.filename}`,
-      filename: file.filename,
-      originalName: file.originalname,
-      size: file.size,
+    const uploadPromises = req.files.map((file) =>
+      uploadToCloudinary(file.buffer, "restaurant-documents")
+    );
+
+    const results = await Promise.all(uploadPromises);
+
+    const fileUrls = results.map((result, index) => ({
+      fileUrl: result.secure_url,
+      publicId: result.public_id,
+      originalName: req.files[index].originalname,
+      size: req.files[index].size,
     }));
 
     res.json({
@@ -96,41 +102,43 @@ router.post("/multiple", upload.array("documents", 5), (req, res) => {
       files: fileUrls,
     });
   } catch (error) {
+    console.error("Upload error:", error);
     res.status(500).json({ message: error.message });
   }
 });
 
 // Upload menu item image
-router.post("/menu-image", upload.single("image"), (req, res) => {
+router.post("/menu-image", upload.single("image"), async (req, res) => {
   try {
     if (!req.file) {
       return res.status(400).json({ message: "No image uploaded" });
     }
 
-    const imageUrl = `/uploads/${req.file.filename}`;
+    const result = await uploadToCloudinary(
+      req.file.buffer,
+      "restaurant-menu-images"
+    );
+
     res.json({
       message: "Image uploaded successfully",
-      imageUrl: imageUrl,
-      filename: req.file.filename,
+      imageUrl: result.secure_url,
+      publicId: result.public_id,
     });
   } catch (error) {
+    console.error("Upload error:", error);
     res.status(500).json({ message: error.message });
   }
 });
 
-// Delete file
-router.delete("/:filename", (req, res) => {
+// Delete file from Cloudinary
+router.delete("/:publicId", async (req, res) => {
   try {
-    const filename = req.params.filename;
-    const filePath = path.join(uploadsDir, filename);
+    const publicId = req.params.publicId.replace(/-/g, "/"); // Convert back to path format
 
-    if (fs.existsSync(filePath)) {
-      fs.unlinkSync(filePath);
-      res.json({ message: "File deleted successfully" });
-    } else {
-      res.status(404).json({ message: "File not found" });
-    }
+    await cloudinary.uploader.destroy(publicId);
+    res.json({ message: "File deleted successfully" });
   } catch (error) {
+    console.error("Delete error:", error);
     res.status(500).json({ message: error.message });
   }
 });
