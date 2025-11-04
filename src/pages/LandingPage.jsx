@@ -143,7 +143,7 @@ const LandingPage = () => {
             <div className="relative h-96 sm:h-[500px] lg:h-[550px]">
               <div className="absolute inset-0 rounded-3xl border border-green-200 shadow-2xl overflow-hidden">
                 <img
-                  src="/QR_scanning_img.png"
+                  src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=800&h=600&fit=crop"
                   alt="Customer scanning QR code on phone at restaurant"
                   className="w-full h-full object-cover"
                 />
