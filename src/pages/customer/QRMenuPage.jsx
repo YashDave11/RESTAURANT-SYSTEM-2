@@ -5,6 +5,7 @@ import ItemCustomizationModal from "../../components/ItemCustomizationModal";
 import CustomerLoginModal from "../../components/CustomerLoginModal";
 import FeedbackHistoryModal from "../../components/FeedbackHistoryModal";
 import { useAuth } from "../../context/MultiAuthContext";
+import { getImageUrlWithFallback } from "../../utils/imageUrl";
 
 const QRMenuPage = () => {
   const { qrSlug } = useParams();
@@ -257,16 +258,13 @@ const QRMenuPage = () => {
       }
 
       // Fetch orders that are still active (not delivered/completed)
-      const response = await axios.get(
-        `http://localhost:5000/api/orders/active`,
-        {
-          params: {
-            restaurantId: tableInfo.restaurantId,
-            tableNumber: tableInfo.tableNumber,
-            customerEmail: customerIdentifier,
-          },
-        }
-      );
+      const response = await axios.get(`/api/orders/active`, {
+        params: {
+          restaurantId: tableInfo.restaurantId,
+          tableNumber: tableInfo.tableNumber,
+          customerEmail: customerIdentifier,
+        },
+      });
 
       console.log("Active orders fetched:", response.data);
       setActiveOrders(response.data || []);
@@ -730,11 +728,10 @@ const QRMenuPage = () => {
             >
               <div className="relative">
                 <img
-                  src={
-                    item.imageUrl
-                      ? `http://localhost:5000${item.imageUrl}`
-                      : "https://via.placeholder.com/300x200?text=No+Image"
-                  }
+                  src={getImageUrlWithFallback(
+                    item.imageUrl,
+                    "https://via.placeholder.com/300x200?text=No+Image"
+                  )}
                   alt={item.name}
                   className="w-full h-48 object-cover"
                 />
@@ -934,11 +931,10 @@ const QRMenuPage = () => {
                         className="flex gap-3 p-3 border rounded-lg"
                       >
                         <img
-                          src={
-                            item.imageUrl
-                              ? `http://localhost:5000${item.imageUrl}`
-                              : "https://via.placeholder.com/60x60?text=No+Image"
-                          }
+                          src={getImageUrlWithFallback(
+                            item.imageUrl,
+                            "https://via.placeholder.com/60x60?text=No+Image"
+                          )}
                           alt={item.name}
                           className="w-16 h-16 object-cover rounded-lg"
                         />

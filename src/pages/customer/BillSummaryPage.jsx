@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { ArrowLeft, Award, Receipt, CreditCard, Gift } from "lucide-react";
 import axios from "axios";
+import { getImageUrlWithFallback } from "../../utils/imageUrl";
 import { useAuth } from "../../context/MultiAuthContext";
 
 const BillSummaryPage = () => {
@@ -148,11 +149,7 @@ const BillSummaryPage = () => {
       console.log("Making POST request to:", "/api/orders");
       console.log("Full URL would be:", `${window.location.origin}/api/orders`);
 
-      // Try direct backend URL first for debugging
-      const { data } = await axios.post(
-        "http://localhost:5000/api/orders",
-        orderData
-      );
+      const { data } = await axios.post("/api/orders", orderData);
       console.log("Order placed successfully:", data);
 
       // If points were redeemed, update customer points
@@ -237,11 +234,10 @@ const BillSummaryPage = () => {
               >
                 <div className="flex gap-3 flex-1">
                   <img
-                    src={
-                      item.imageUrl
-                        ? `http://localhost:5000${item.imageUrl}`
-                        : "https://via.placeholder.com/60x60?text=No+Image"
-                    }
+                    src={getImageUrlWithFallback(
+                      item.imageUrl,
+                      "https://via.placeholder.com/60x60?text=No+Image"
+                    )}
                     alt={item.name}
                     className="w-16 h-16 object-cover rounded-lg"
                   />

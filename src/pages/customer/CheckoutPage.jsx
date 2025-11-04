@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useAuth } from "../../context/MultiAuthContext";
+import { getImageUrlWithFallback } from "../../utils/imageUrl";
 import CustomerLoginModal from "../../components/CustomerLoginModal";
 
 const CheckoutPage = () => {
@@ -288,11 +289,10 @@ const CheckoutPage = () => {
               >
                 <div className="flex gap-3 flex-1">
                   <img
-                    src={
-                      item.imageUrl
-                        ? `http://localhost:5000${item.imageUrl}`
-                        : "https://via.placeholder.com/60x60?text=No+Image"
-                    }
+                    src={getImageUrlWithFallback(
+                      item.imageUrl,
+                      "https://via.placeholder.com/60x60?text=No+Image"
+                    )}
                     alt={item.name}
                     className="w-16 h-16 object-cover rounded-lg"
                   />
