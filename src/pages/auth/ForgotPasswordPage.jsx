@@ -65,22 +65,14 @@ const ForgotPasswordPage = () => {
             </div>
           </div>
 
-          <h2 className="text-2xl font-black mb-4">Reset Code Sent!</h2>
-          <p className="text-gray-600 mb-4">
-            We've sent a password reset code to <strong>{email}</strong>
+          <h2 className="text-2xl font-black mb-4">Check Your Email</h2>
+          <p className="text-gray-600 mb-6">
+            We've sent a 6-digit password reset code to <strong>{email}</strong>
           </p>
-
-          {resetToken && (
-            <div className="bg-orange-50 border-2 border-orange-200 rounded-lg p-4 mb-6">
-              <p className="text-sm text-gray-600 mb-2">Your Reset Code:</p>
-              <p className="text-3xl font-bold text-orange-600 tracking-wider">
-                {resetToken}
-              </p>
-              <p className="text-xs text-gray-500 mt-2">
-                This code will expire in 1 hour
-              </p>
-            </div>
-          )}
+          <p className="text-sm text-gray-500 mb-6">
+            Please check your email inbox (and spam folder) for the reset code.
+            The code will expire in 1 hour.
+          </p>
 
           <div className="flex flex-col gap-3">
             <Link

@@ -34,9 +34,7 @@ const RestaurantForgotPasswordPage = () => {
       sessionStorage.setItem("resetEmail", email);
 
       setMessage(
-        `Reset code sent! ${
-          data.devToken ? `Your code is: ${data.devToken}` : "Check your email."
-        }`
+        "If an account exists with this email, you will receive a password reset code shortly. Please check your email."
       );
 
       // Redirect to reset password page after 3 seconds
