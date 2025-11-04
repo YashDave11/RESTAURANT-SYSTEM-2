@@ -24,24 +24,14 @@ const CustomerLoginModal = ({ onClose, onSuccess }) => {
         await login(formData.email, formData.password, "customer");
       } else {
         // Register as customer
-        const response = await fetch("/api/auth/register", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            name: formData.name,
-            email: formData.email,
-            phone: formData.phone,
-            password: formData.password,
-            role: "customer",
-          }),
+        const { data } = await axios.post("/api/auth/register", {
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          password: formData.password,
+          role: "customer",
         });
 
-        if (!response.ok) {
-          const data = await response.json();
-          throw new Error(data.message || "Registration failed");
-        }
-
-        const data = await response.json();
         // Auto-login after registration
         await login(formData.email, formData.password, "customer");
       }

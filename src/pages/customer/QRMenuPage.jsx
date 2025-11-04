@@ -34,10 +34,17 @@ const QRMenuPage = () => {
     getCustomerSession,
     logout,
     loading: authLoading,
+    switchSession,
   } = useAuth();
 
   // Local state to track if we've checked authentication at least once
   const [authChecked, setAuthChecked] = useState(false);
+
+  // Clear restaurant session when customer visits QR menu
+  useEffect(() => {
+    // If there's a restaurant session active, switch to customer context
+    switchSession("customer");
+  }, []);
 
   // Debug logging for authentication state
   useEffect(() => {
